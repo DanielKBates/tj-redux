@@ -1,19 +1,42 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { nanoid } from "@reduxjs/toolkit";
+import { sub } from "date-fns";
 
 const initialState = [
-    {id:"1", title:"First Post", content: "Hello World"},
-    {id:"2", title: "second Post", content: "second post content"}
+    { id: "1", title: "First Post", content: "Hello World", user: "1", date: sub(new Date(), { minutes: 10 }).toISOString() },
+    { id: "2", title: "second Post", content: "second post content", user: "2", date: sub(new Date(), { minutes: 5 }).toISOString() }
 ]
 
 const blogSlice = createSlice({
-    name:"blog",
+    name: "blog",
     initialState,
     reducers: {
-        addPost: (state, action) => {
+        addPost: {
+          reducer(state, action) {
             state.push(action.payload)
+          },
+          prepare(title, content, userId) {
+            return {
+              payload: {
+                id: nanoid(),
+                date: new Date().toISOString(),
+                title,
+                content,
+                user: userId
+              }
+            }
+          }
+        },
+        updatePost: (state, action) => {
+            const { id, title, content } = action.payload
+            const existingPost = state.find(blogPost => blogPost.id === id)
+            if (existingPost) {
+                existingPost.title = title
+                existingPost.content = content
+            }
         }
     }
 })
 
-export const { addPost } = blogSlice.actions
+export const { addPost, updatePost } = blogSlice.actions
 export default blogSlice.reducer
