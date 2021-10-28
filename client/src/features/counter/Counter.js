@@ -20,7 +20,7 @@ const Counter = () => {
     async function fetchData(){
       const res = await axios.get("/api/allPosts")
       // axios.get("/api").then(res => {
-      //   console.log(res)
+        console.log(res)
       // })
     }
     fetchData()

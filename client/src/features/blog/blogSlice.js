@@ -10,7 +10,7 @@ export const fetchPosts = createAsyncThunk(
     try {
       const dbRes = await axios.get("/api/allPosts");
       console.log("yooo" + dbRes)
-      return await dbRes.json();
+      return await dbRes.data;
     } catch (error) {
       return error
     }
