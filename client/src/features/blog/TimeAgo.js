@@ -3,6 +3,7 @@ import { parseISO, formatDistanceToNow } from 'date-fns'
 
  const TimeAgo = ({ timestamp }) => {
   let timeAgo = ''
+  console.log(timestamp)
   if (timestamp) {
     const date = parseISO(timestamp)
     const timePeriod = formatDistanceToNow(date)

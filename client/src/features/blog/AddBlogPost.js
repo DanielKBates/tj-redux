@@ -17,7 +17,7 @@ const AddBlogPost = () => {
   const handlepostAdded = (e) => {
     e.preventDefault();
 
-    dispatch(postAdded(formData.title, formData.content, formData.userId));
+    dispatch(postAdded({title: formData.title, content: formData.content, userId:formData.userId}));
     setFormData({ title: "", content: "" });
   };
 

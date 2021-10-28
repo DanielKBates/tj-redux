@@ -7,7 +7,7 @@ const SinglePost = ({ match }) => {
   const { postId } = match.params;
 
   const blogPost = useSelector((state) =>
-    state.blog.find((blogItem) => blogItem.id === postId)
+    state.blog.blog.find((blogItem) => blogItem.id === postId)
   );
   useEffect(() => {
     console.log(blogPost);

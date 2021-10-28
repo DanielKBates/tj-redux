@@ -18,8 +18,7 @@ const Counter = () => {
 
   useEffect(()=> {
     async function fetchData(){
-      const res = await axios.get("/api/ping")
-      console.log(res.data)
+      const res = await axios.get("/api/allPosts")
       // axios.get("/api").then(res => {
       //   console.log(res)
       // })

@@ -1,13 +1,25 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+
+import { fetchPosts } from "./blogSlice";
 
 import AuthorDisplay from "./AuthorDisplay";
 import TimeAgo from "./TimeAgo";
 import ReactionButtons from "./ReactionButtons";
 
 const BlogPosts = () => {
-  const blog = useSelector((state) => state.blog);
+  const postStatus = useSelector((state) => state.blog.blog.status);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+   
+      if (postStatus === "idle"){
+       dispatch(fetchPosts());
+    }
+  }, [dispatch, postStatus]);
+
+  const blog = useSelector((state) => state.blog.blog);
   const sortedPosts = blog.slice().sort((a, b) => b.date.localeCompare(a.date));
   return (
     <div className="flex flex-col space-y-6 divide-y divide-gray-300 bg-indigo-100 p-5  rounded-lg">

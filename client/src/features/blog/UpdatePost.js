@@ -8,7 +8,7 @@ const UpdatePost = ({ match }) => {
     const { postId } = match.params
 
     const post = useSelector(state =>
-        state.blog.find(post => post.id === postId)
+        state.blog.blog.find(post => post.id === postId)
     )
 
     const [formData, setFormData] = useState({ title: post.title, content: post.content })
