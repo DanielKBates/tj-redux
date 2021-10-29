@@ -2,48 +2,72 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { nanoid } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const fetchPosts = createAsyncThunk("blog/fetchBlogPosts", async () => {
+  try {
+    const dbRes = await axios.get("/api/allPosts");
+    return await dbRes.data;
+  } catch (error) {
+    return error;
+  }
+});
 
+export const postAdded = createAsyncThunk("blog/postAdded", async (data) => {
+  try {
+    console.log(data);
+    const dbRes = await axios.post("/api/addPost", {
+      id: nanoid(),
+      date: new Date().toISOString(),
+      title: data.title,
+      content: data.content,
+      user: data.userId,
+      reactions: {
+        thumbsUp: 0,
+        heart: 0,
+        thumbsDown: 0,
+        eyes: 0,
+        dislike: 0,
+      },
+    });
+    return await dbRes.data;
+  } catch (error) {
+    return error;
+  }
+});
 
-export const fetchPosts = createAsyncThunk(
-  "blog/fetchBlogPosts",
-  async () => {
+export const addReaction = createAsyncThunk(
+  "blog/addReaction",
+  async (payload) => {
     try {
-      const dbRes = await axios.get("/api/allPosts");
-      console.log("yooo" + dbRes)
+      const { blogPostId, reaction } = payload;
+
+      const dbRes = await axios.post("/api/addReaction", {
+        id: blogPostId,
+        reaction,
+      });
       return await dbRes.data;
     } catch (error) {
-      return error
+      return error;
     }
   }
 );
 
-export const postAdded = createAsyncThunk(
-  "blog/postAdded",
-  async (initialPost) => {
-    try{
-      console.log(initialPost)
-      const dbRes = await axios.post("/api/addPost", {
-        id: nanoid(),
-        date: new Date().toISOString(),
-        title: initialPost.title,
-        content: initialPost.content,
-        user: initialPost.userId,
-        reactions: {
-          thumbsUp: 0,
-          heart: 0,
-          thumbsDown: 0,
-          eyes: 0,
-          dislike: 0,
-        }
-      })
-      return await dbRes.data
-    }
-    catch(error) {
-      return error
+export const updatePost = createAsyncThunk(
+  "blog/updatePost",
+  async (payload) => {
+    try {
+      const { id, title, content } = payload;
+
+      const dbRes = await axios.post("/api/updatePost", {
+        id,
+        title,
+        content,
+      });
+      return await dbRes.data;
+    } catch (error) {
+      return error;
     }
   }
 );
-
 const blogSlice = createSlice({
   name: "blog",
   initialState: {
@@ -51,48 +75,7 @@ const blogSlice = createSlice({
     loading: "idle",
     error: "",
   },
-  reducers: {
-    // postAdded: {
-    //   reducer(state, action) {
-    //     state.blog.push(action.payload);
-    //   },
-    //   prepare(title, content, userId) {
-    //     return {
-    //       payload: {
-    //         id: nanoid(),
-    //         date: new Date().toISOString(),
-    //         title,
-    //         content,
-    //         user: userId,
-    //         reactions: {
-    //           thumbsUp: 0,
-    //           heart: 0,
-    //           thumbsDown: 0,
-    //           eyes: 0,
-    //           dislike: 0,
-    //         },
-    //       },
-    //     };
-    //   },
-    // },
-    reactionAdded: (state, action) => {
-      const { blogPostId, reaction } = action.payload;
-      const existingBlogPost = state.blog.find(
-        (blogPost) => blogPost.id === blogPostId
-      );
-      if (existingBlogPost) {
-        existingBlogPost.reactions[reaction]++;
-      }
-    },
-    postUpdated: (state, action) => {
-      const { id, title, content } = action.payload;
-      const existingPost = state.blog.find((blogPost) => blogPost.id === id);
-      if (existingPost) {
-        existingPost.title = title;
-        existingPost.content = content;
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPosts.pending, (state) => {
       state.blog = [];
@@ -107,13 +90,30 @@ const blogSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(postAdded.fulfilled, (state, action) => {
-      state.blog.push(action.payload)
-    })
+      state.blog.push(action.payload);
+    });
+
+    builder.addCase(addReaction.fulfilled, (state, action) => {
+      const { id, reactions } = action.payload;
+      const existingBlogPost = state.blog.find(
+        (blogPost) => blogPost.id === id
+      );
+      existingBlogPost.reactions = reactions;
+    });
+    builder.addCase(updatePost.fulfilled, (state, action) => {
+      const { id, title, content } = action.payload;
+      console.log(action.payload)
+      const existingBlogPost = state.blog.find(
+        (blogPost) => blogPost.id === id
+      );
+      existingBlogPost.title = title;
+      existingBlogPost.content = content;
+    });
   },
 });
 
 export const selectAllPosts = (state) => state.blog;
 export const selectPostById = (state, postId) =>
-  state.blog.find((blogPost) => blogPost.id === postId);
-export const { postUpdated, reactionAdded } = blogSlice.actions;
+  state.blog.blog.find((blogPost) => blogPost.id === postId);
+export const { postUpdated } = blogSlice.actions;
 export default blogSlice.reducer;

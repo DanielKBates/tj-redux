@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
@@ -16,15 +15,7 @@ const Counter = () => {
   const count = useSelector(selectCount);
   const dispatch = useDispatch();
 
-  useEffect(()=> {
-    async function fetchData(){
-      const res = await axios.get("/api/allPosts")
-      // axios.get("/api").then(res => {
-        console.log(res)
-      // })
-    }
-    fetchData()
-  }, [])
+
 
   return (
     <div className="w-2/3 mx-auto p-5 mt-10 space-y-6 border-2 border-blue-500 rounded-xl bg-gray-100">

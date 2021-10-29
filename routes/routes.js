@@ -9,4 +9,11 @@ module.exports = function (app) {
     blogPostControllers.savePost(req,res)
   })
  
+  app.post("/api/addReaction", (req, res)=> {
+    blogPostControllers.addReaction(req, res)
+  })
+
+  app.post("/api/updatePost", (req, res)=> {
+    blogPostControllers.updatePost(req,res)
+  })
 };

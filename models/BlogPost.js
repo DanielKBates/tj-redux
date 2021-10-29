@@ -14,7 +14,28 @@ const blogPostSchema = mongoose.Schema({
   },
   user: String,
   date: Date,
-  reactions: mongoose.Schema.Types.Mixed,
+  reactions: {
+    thumbsUp: {
+      type: Number,
+      default: 0,
+    },
+    heart: {
+      type: Number,
+      default: 0,
+    },
+    thumbsDown: {
+      type: Number,
+      default: 0,
+    },
+    eyes: {
+      type: Number,
+      default: 0,
+    },
+    dislike: {
+      type: Number,
+      default: 0,
+    },
+  },
 });
 
 const BlogPost = mongoose.model("BlogPost", blogPostSchema);

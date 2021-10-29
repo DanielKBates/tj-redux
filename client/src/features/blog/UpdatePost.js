@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import { postUpdated } from './blogSlice'
+import { updatePost } from './blogSlice'
 
 const UpdatePost = ({ match }) => {
     const { postId } = match.params
-
+    console.log(postId)
     const post = useSelector(state =>
         state.blog.blog.find(post => post.id === postId)
     )
@@ -23,7 +23,7 @@ const UpdatePost = ({ match }) => {
     const handleEditSave = (e) => {
         e.preventDefault()
         if (formData.title && formData.content) {
-            dispatch(postUpdated({ id: postId, title: formData.title, content: formData.content }))
+            dispatch(updatePost({ id: postId, title: formData.title, content: formData.content }))
             history.push(`/blog/${postId}`)
         }
     }

@@ -9,7 +9,8 @@ import TimeAgo from "./TimeAgo";
 import ReactionButtons from "./ReactionButtons";
 
 const BlogPosts = () => {
-  const postStatus = useSelector((state) => state.blog.blog.status);
+  const postStatus = useSelector((state) => state.blog.loading);
+  console.log(postStatus)
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,8 +1,7 @@
 import React from "react";
 
-import { useDispatch } from "react-redux";
-
-import { reactionAdded } from "./blogSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addReaction, selectPostById } from "./blogSlice";
 
 const reactions = {
   thumbsUp: "👍",
@@ -13,17 +12,20 @@ const reactions = {
 };
 
 const ReactionButtons = ({ blogPost }) => {
+  const postReactions = useSelector((state) =>
+    state.blog.blog.find((post) => blogPost.id === post.id)
+  );
   const dispatch = useDispatch();
-  const reactionButtons = Object.entries(reactions).map(([name, emoji]) => {
+  const reactionButtons = Object.entries(reactions).map(([reaction, emoji]) => {
     return (
       <button
-        key={name}
-        type="button"
-        onClick={() =>
-          dispatch(reactionAdded({ blogPostId: blogPost.id, reaction: name }))
-        }
+        key={reaction}
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(addReaction({ blogPostId: blogPost.id, reaction }));
+        }}
       >
-        {emoji} {blogPost.reactions[name]}
+        {emoji} {postReactions.reactions[reaction]}
       </button>
     );
   });
